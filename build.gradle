@@ -7,6 +7,7 @@ plugins {
     id "edu.sc.seis.launch4j" version "3.0.6"
     id "com.diffplug.spotless" version "6.25.0"
     id "com.github.jk1.dependency-license-report" version "2.9"
+    id "jacoco"
 	//id "nebula.lint" version "19.0.3"
 }
 
@@ -18,7 +19,7 @@ ext {
     logbackVersion = "1.5.7"
     imageioVersion = "3.11.0"
     lombokVersion = "1.18.34"
-    bouncycastleVersion = "1.78.1"	
+    bouncycastleVersion = "1.78.1"
 }
 
 group = "stirling.software"
@@ -143,7 +144,7 @@ dependencies {
 
     // Batik
     implementation "org.apache.xmlgraphics:batik-all:1.17"
-    
+
     // TwelveMonkeys
     runtimeOnly "com.twelvemonkeys.imageio:imageio-batik:$imageioVersion"
     runtimeOnly "com.twelvemonkeys.imageio:imageio-bmp:$imageioVersion"
@@ -181,7 +182,7 @@ dependencies {
 
     implementation 'org.apache.pdfbox:jbig2-imageio:3.0.4'
 
-	
+
     implementation "com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4"
 
     implementation "org.bouncycastle:bcprov-jdk18on:$bouncycastleVersion"
@@ -237,9 +238,24 @@ jar {
 
 }
 
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
 tasks.named("test") {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
+
 
 task printVersion {
     println project.version
